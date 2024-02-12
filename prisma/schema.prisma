@@ -9,3 +9,98 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       Int       @id @default(autoincrement())
+  name     String    @db.VarChar(40)
+  email    String    @db.VarChar(60)
+  password String
+  image    String?
+  bio      String?   @db.TinyText
+  menus    Menu[]
+  comments Comment[]
+  ratings  Rating[]
+
+  @@map("users")
+}
+
+model Menu {
+  id           Int           @id @default(autoincrement())
+  userId       Int           @map("user_id")
+  user         User          @relation(fields: [userId], references: [id])
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+  // updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
+  deletedAt    DateTime?     @map("deleted_at") @db.Timestamp(0)
+  ingredients  Ingredient[]
+  info         Info[]
+  instructions Instruction[]
+  comments     Comment[]
+  ratings      Rating[]
+
+  @@map("menus")
+}
+
+model Info {
+  id          Int     @id @default(autoincrement())
+  menuId      Int     @map("menu_id")
+  menu        Menu    @relation(fields: [menuId], references: [id])
+  description String? @db.TinyText
+  image       String?
+  serving     Int
+  prepTime    Int
+  cookTime    Int
+  tips        String? @db.TinyText
+
+  @@map("infos")
+}
+
+model Ingredient {
+  id         Int     @id @default(autoincrement())
+  menuId     Int     @map("menu_id")
+  menu       Menu    @relation(fields: [menuId], references: [id])
+  ingredient String  @db.VarChar(40)
+  amount     Decimal @db.Decimal(10, 4)
+  unit       String  @db.VarChar(40)
+  detail     String? @db.VarChar(191)
+
+  @@map("ingredients")
+}
+
+model Instruction {
+  id     Int     @id @default(autoincrement())
+  menuId Int     @map("menu_id")
+  menu   Menu    @relation(fields: [menuId], references: [id])
+  image  String?
+
+  @@map("instructions")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  menuId    Int       @map("menu_id")
+  menu      Menu      @relation(fields: [menuId], references: [id])
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  commentId Int?      @map("comment_id")
+  comment   Comment?  @relation("CommentReply", fields: [commentId], references: [id])
+  replies   Comment[] @relation("CommentReply")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(0)
+
+  @@map("comments")
+}
+
+model Rating {
+  id        Int       @id @default(autoincrement())
+  menuId    Int       @map("menu_id")
+  menu      Menu      @relation(fields: [menuId], references: [id])
+  userId    Int       @map("user_id")
+  user      User      @relation(fields: [userId], references: [id])
+  rating    Int
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(0)
+
+  @@map("ratings")
+}
