@@ -1,0 +1,23 @@
+### Authentication ###
+POST /auth/register     register a new user
+REQUEST BODY
+{
+    name*               String      user name
+    email*              String      email
+    password*           String      password must contain only alphabet
+    confirmPassword*    String      confirm password must match a password
+}
+RESPONSE
+201
+    {
+        accessToken     string      user token
+        newUser         object      user object without password
+    }
+400
+    {
+        message         string      client error message
+    }
+500
+    {
+        message         string      server error message
+    }
