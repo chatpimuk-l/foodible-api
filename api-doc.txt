@@ -21,3 +21,42 @@ RESPONSE
     {
         message         string      server error message
     }
+
+
+POST /auth/login     user login
+REQUEST BODY
+{
+    email*              String      email
+    password*           String      password must contain only alphabet
+}
+RESPONSE
+200
+    {
+        accessToken     string      user token
+        user            object      user object without password
+    }
+400
+    {
+        message         string      client error message
+    }
+500
+    {
+        message         string      server error message
+    }
+
+GET /auth/me            fetch me
+REQUEST BODY
+RESPONSE
+200
+    {
+        accessToken     string      user token
+        user            object      user object without password
+    }
+400
+    {
+        message         string      client error message
+    }
+500
+    {
+        message         string      server error message
+    }

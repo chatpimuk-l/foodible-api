@@ -19,4 +19,26 @@ exports.register = catchError(async (req, res, next) => {
   res.status(201).json({ accessToken, user });
 });
 
-exports.login = catchError(async (req, res, next) => {});
+exports.login = catchError(async (req, res, next) => {
+  const existedUser = await userService.findUserByEmail(req.body.email);
+  if (!existedUser) {
+    createError("Wrong email or password", 400);
+  }
+  const isMatch = await hashService.compare(
+    req.body.password,
+    existedUser.password
+  );
+  if (!isMatch) {
+    createError("Wrong email or password", 400);
+  }
+
+  const payload = { userId: existedUser.id };
+  const accessToken = jwtService.sign(payload);
+  delete existedUser.password;
+
+  res.status(200).json({ accessToken, user: existedUser });
+});
+
+exports.getMe = catchError(async (req, res, next) => {
+  res.status(200).json({ user: req.user });
+});
