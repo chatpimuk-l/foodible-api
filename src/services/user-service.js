@@ -11,3 +11,9 @@ exports.findUserById = (id) =>
   });
 
 exports.createUser = (data) => prisma.user.create({ data });
+
+exports.findUserProfileByTargetUserId = (targetUserId) =>
+  prisma.user.findFirst({
+    where: { id: targetUserId },
+    include: { recipes: true, favs: true },
+  });

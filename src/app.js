@@ -3,6 +3,8 @@ const express = require("express");
 const cors = require("cors");
 
 const authRoute = require("./routes/auth-route");
+const userRoute = require("./routes/user-route");
+
 const error = require("./middlewares/error");
 const notFound = require("./middlewares/not-found");
 
@@ -12,6 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/auth", authRoute);
+app.use("/users", userRoute);
 
 app.use(notFound);
 app.use(error);

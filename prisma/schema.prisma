@@ -17,14 +17,15 @@ model User {
   password String
   image    String?
   bio      String?   @db.TinyText
-  menus    Menu[]
+  recipes  Recipe[]
   comments Comment[]
   ratings  Rating[]
+  favs     Fav[]
 
   @@map("users")
 }
 
-model Menu {
+model Recipe {
   id           Int           @id @default(autoincrement())
   userId       Int           @map("user_id")
   user         User          @relation(fields: [userId], references: [id])
@@ -36,14 +37,15 @@ model Menu {
   instructions Instruction[]
   comments     Comment[]
   ratings      Rating[]
+  favs         Fav[]
 
-  @@map("menus")
+  @@map("recipes")
 }
 
 model Info {
   id          Int     @id @default(autoincrement())
-  menuId      Int     @map("menu_id")
-  menu        Menu    @relation(fields: [menuId], references: [id])
+  recipeId    Int     @map("recipe_id")
+  recipe      Recipe  @relation(fields: [recipeId], references: [id])
   description String? @db.TinyText
   image       String?
   serving     Int
@@ -56,8 +58,8 @@ model Info {
 
 model Ingredient {
   id         Int     @id @default(autoincrement())
-  menuId     Int     @map("menu_id")
-  menu       Menu    @relation(fields: [menuId], references: [id])
+  recipeId   Int     @map("recipe_id")
+  recipe     Recipe  @relation(fields: [recipeId], references: [id])
   ingredient String  @db.VarChar(40)
   amount     Decimal @db.Decimal(10, 4)
   unit       String  @db.VarChar(40)
@@ -67,20 +69,20 @@ model Ingredient {
 }
 
 model Instruction {
-  id     Int     @id @default(autoincrement())
-  menuId Int     @map("menu_id")
-  menu   Menu    @relation(fields: [menuId], references: [id])
-  image  String?
+  id       Int     @id @default(autoincrement())
+  recipeId Int     @map("recipe_id")
+  recipe   Recipe  @relation(fields: [recipeId], references: [id])
+  image    String?
 
   @@map("instructions")
 }
 
 model Comment {
   id        Int       @id @default(autoincrement())
-  menuId    Int       @map("menu_id")
-  menu      Menu      @relation(fields: [menuId], references: [id])
   userId    Int
   user      User      @relation(fields: [userId], references: [id])
+  recipeId  Int       @map("recipe_id")
+  recipe    Recipe    @relation(fields: [recipeId], references: [id])
   commentId Int?      @map("comment_id")
   comment   Comment?  @relation("CommentReply", fields: [commentId], references: [id])
   replies   Comment[] @relation("CommentReply")
@@ -93,14 +95,24 @@ model Comment {
 
 model Rating {
   id        Int       @id @default(autoincrement())
-  menuId    Int       @map("menu_id")
-  menu      Menu      @relation(fields: [menuId], references: [id])
   userId    Int       @map("user_id")
   user      User      @relation(fields: [userId], references: [id])
+  recipeId  Int       @map("recipe_id")
+  recipe    Recipe    @relation(fields: [recipeId], references: [id])
   rating    Int
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(0)
 
   @@map("ratings")
+}
+
+model Fav {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
+  recipeId Int
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+
+  @@map("favs")
 }
