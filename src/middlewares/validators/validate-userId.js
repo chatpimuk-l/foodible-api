@@ -14,3 +14,13 @@ exports.validateTargetUserId = (req, res, next) => {
   req.targetUserId = value.targetUserId;
   next();
 };
+exports.validateMyTargetUserId = (req, res, next) => {
+  const { value, error } = userIdSchema.validate({
+    targetUserId: req.user.id,
+  });
+  if (error) {
+    throw error;
+  }
+  req.targetUserId = value.targetUserId;
+  next();
+};

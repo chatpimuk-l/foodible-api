@@ -17,3 +17,9 @@ exports.findUserProfileByTargetUserId = (targetUserId) =>
     where: { id: targetUserId },
     include: { recipes: true, favs: true },
   });
+
+exports.updateUser = (id, data) =>
+  prisma.user.update({
+    where: { id },
+    data,
+  });
