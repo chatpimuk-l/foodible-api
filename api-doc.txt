@@ -60,3 +60,47 @@ RESPONSE
     {
         message         string      server error message
     }
+
+
+GET     /users/:targetUserId/profile
+HEADER
+    AUTHORIZATION       Bearer [JWT]
+RESPONSE
+    200 { user, recipes, favs }
+    400 { message: 'unexpected field' }
+    401 { message: 'unauthenticated' }
+    500 { message: 'internal server error' }
+
+PATCH   /users          update user profile
+HEADER
+    AUTHORIZATION       Bearer [JWT]
+REQUEST BODY            multipart/form-data
+    name
+    bio
+    image
+RESPONSE
+    200 { data: user }
+    400 { message: 'unexpected field' }
+    401 { message: 'unauthenticated' }
+    500 { message: 'internal server error' }
+
+POST   /recipes         create recipe
+HEADER
+    AUTHORIZATION       Bearer [JWT]
+REQUEST BODY            multipart/form-data
+    name   
+    description?
+    image
+    prepTime
+    cookTime
+    serving
+    ingredients [{ingredient, amount, unit}, {}]
+    instructions [{instruction, image?}]
+    tip?
+RESPONSE
+    200 { recipe }
+    400 { message: 'unexpected field' }
+    401 { message: 'unauthenticated' }
+    500 { message: 'internal server error' }
+
+

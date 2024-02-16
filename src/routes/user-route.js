@@ -4,7 +4,6 @@ const router = express.Router();
 const userController = require("../controllers/user-controller");
 const {
   validateTargetUserId,
-  validateMyTargetUserId,
 } = require("../middlewares/validators/validate-userId");
 const upload = require("../middlewares/upload");
 const authenticate = require("../middlewares/authenticate");

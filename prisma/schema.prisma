@@ -29,6 +29,7 @@ model Recipe {
   id           Int           @id @default(autoincrement())
   userId       Int           @map("user_id")
   user         User          @relation(fields: [userId], references: [id])
+  name         String        @db.VarChar(60)
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
   // updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
   deletedAt    DateTime?     @map("deleted_at") @db.Timestamp(0)
@@ -51,7 +52,7 @@ model Info {
   serving     Int
   prepTime    Int
   cookTime    Int
-  tips        String? @db.TinyText
+  tip         String? @db.TinyText
 
   @@map("infos")
 }
@@ -63,16 +64,16 @@ model Ingredient {
   ingredient String  @db.VarChar(40)
   amount     Decimal @db.Decimal(10, 4)
   unit       String  @db.VarChar(40)
-  detail     String? @db.VarChar(191)
 
   @@map("ingredients")
 }
 
 model Instruction {
-  id       Int     @id @default(autoincrement())
-  recipeId Int     @map("recipe_id")
-  recipe   Recipe  @relation(fields: [recipeId], references: [id])
-  image    String?
+  id          Int     @id @default(autoincrement())
+  recipeId    Int     @map("recipe_id")
+  recipe      Recipe  @relation(fields: [recipeId], references: [id])
+  instruction String  @db.TinyText
+  image       String?
 
   @@map("instructions")
 }
