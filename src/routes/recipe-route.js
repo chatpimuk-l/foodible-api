@@ -15,4 +15,8 @@ router.post(
   recipeController.createRecipe
 );
 
+router.get("/", recipeController.getRecipes);
+router.get("/:recipeId", recipeController.getRecipeByRecipeId);
+router.get("/users/:userId", recipeController.getRecipeByUserId);
+
 module.exports = router;

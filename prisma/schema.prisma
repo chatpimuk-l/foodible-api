@@ -31,10 +31,9 @@ model Recipe {
   user         User          @relation(fields: [userId], references: [id])
   name         String        @db.VarChar(60)
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
-  // updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
   deletedAt    DateTime?     @map("deleted_at") @db.Timestamp(0)
   ingredients  Ingredient[]
-  info         Info[]
+  infos        Info[]
   instructions Instruction[]
   comments     Comment[]
   ratings      Rating[]

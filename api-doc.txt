@@ -13,15 +13,8 @@ RESPONSE
         accessToken     string      user token
         newUser         object      user object without password
     }
-400
-    {
-        message         string      client error message
-    }
-500
-    {
-        message         string      server error message
-    }
-
+400 {   message         string      client error message }
+500 {   message         string      server error message }
 
 POST /auth/login     user login
 REQUEST BODY
@@ -52,14 +45,8 @@ RESPONSE
         accessToken     string      user token
         user            object      user object without password
     }
-400
-    {
-        message         string      client error message
-    }
-500
-    {
-        message         string      server error message
-    }
+400 {   message         string      client error message }
+500 {   message         string      server error message }
 
 
 GET     /users/:targetUserId/profile
