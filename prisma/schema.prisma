@@ -45,7 +45,7 @@ model Recipe {
 model Info {
   id          Int     @id @default(autoincrement())
   recipeId    Int     @map("recipe_id")
-  recipe      Recipe  @relation(fields: [recipeId], references: [id])
+  recipe      Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   description String? @db.TinyText
   image       String?
   serving     Int
@@ -59,7 +59,7 @@ model Info {
 model Ingredient {
   id         Int     @id @default(autoincrement())
   recipeId   Int     @map("recipe_id")
-  recipe     Recipe  @relation(fields: [recipeId], references: [id])
+  recipe     Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   ingredient String  @db.VarChar(40)
   amount     Decimal @db.Decimal(10, 4)
   unit       String  @db.VarChar(40)
@@ -70,7 +70,7 @@ model Ingredient {
 model Instruction {
   id          Int     @id @default(autoincrement())
   recipeId    Int     @map("recipe_id")
-  recipe      Recipe  @relation(fields: [recipeId], references: [id])
+  recipe      Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   instruction String  @db.TinyText
   image       String?
 
@@ -82,7 +82,7 @@ model Comment {
   userId    Int
   user      User      @relation(fields: [userId], references: [id])
   recipeId  Int       @map("recipe_id")
-  recipe    Recipe    @relation(fields: [recipeId], references: [id])
+  recipe    Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   commentId Int?      @map("comment_id")
   comment   Comment?  @relation("CommentReply", fields: [commentId], references: [id])
   replies   Comment[] @relation("CommentReply")
@@ -98,7 +98,7 @@ model Rating {
   userId    Int       @map("user_id")
   user      User      @relation(fields: [userId], references: [id])
   recipeId  Int       @map("recipe_id")
-  recipe    Recipe    @relation(fields: [recipeId], references: [id])
+  recipe    Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   rating    Int
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
@@ -112,7 +112,7 @@ model Fav {
   userId   Int
   user     User   @relation(fields: [userId], references: [id])
   recipeId Int
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   @@map("favs")
 }

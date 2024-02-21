@@ -85,9 +85,27 @@ REQUEST BODY            multipart/form-data
     instructions [{instruction, image?}]
     tip?
 RESPONSE
-    200 { recipe }
+    201 { recipe }
     400 { message: 'unexpected field' }
     401 { message: 'unauthenticated' }
     500 { message: 'internal server error' }
 
+PATCH   /recipes        edit recipe
+HEADER
+    AUTHORIZATION       Bearer [JWT]
+REQUEST BODY            multipart/form-data
+    name   
+    description?
+    image
+    prepTime
+    cookTime
+    serving
+    ingredients [{ingredient, amount, unit}, {}]
+    instructions [{instruction, image?}]
+    tip?
+RESPONSE
+    200 { recipe }
+    400 { message: 'unexpected field' }
+    401 { message: 'unauthenticated' }
+    500 { message: 'internal server error' }
 

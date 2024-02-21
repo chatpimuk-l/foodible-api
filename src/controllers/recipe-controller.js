@@ -1,3 +1,4 @@
+const fs = require("fs/promises");
 const catchError = require("../utils/catch-error");
 const createError = require("../utils/create-error");
 
@@ -36,7 +37,7 @@ exports.createRecipe = catchError(async (req, res, next) => {
     tip,
   };
 
-  if (req.files) {
+  if (req.files?.recipeImage) {
     infoData.image = await uploadService.upload(
       req.files?.recipeImage?.[0].path
     );
@@ -74,11 +75,108 @@ exports.createRecipe = catchError(async (req, res, next) => {
     }
   }
 
-  res.status(200).json({ recipe: { id, ...req.body } });
+  res.status(201).json({ recipe: { id, ...req.body } });
+});
+
+exports.updateRecipe = catchError(async (req, res, next) => {
+  const {
+    name,
+    description,
+    prepTime,
+    cookTime,
+    serving,
+    tip,
+    ingredients,
+    instructions,
+  } = req.body;
+
+  const recipeId = +req.params.recipeId;
+
+  await recipeService.updateRecipe(recipeId, name);
+
+  const infoData = {
+    recipeId: recipeId,
+    description,
+    prepTime: +prepTime,
+    cookTime: +cookTime,
+    serving: +serving,
+    tip,
+  };
+
+  console.log("req.files.recipeImage", req.files.recipeImage);
+  console.log(111);
+  if (req.files?.recipeImage) {
+    console.log(222);
+    infoData.image = await uploadService.upload(
+      req.files?.recipeImage?.[0].path
+    );
+    fs.unlink(req.files?.recipeImage?.[0].path);
+  }
+  await infoService.updateInfo(recipeId, infoData);
+
+  await ingredientService.deleteIngredient(recipeId);
+  const parsedIngredients = JSON.parse(ingredients);
+  for (el of parsedIngredients) {
+    await ingredientService.createIngredient({
+      recipeId: recipeId,
+      ingredient: el.ingredient,
+      amount: +el.amount,
+      unit: el.unit,
+    });
+  }
+
+  await instructionService.deleteInstruction(recipeId);
+  const parsedInstructions = JSON.parse(instructions);
+  let count = 0;
+  for (el of parsedInstructions) {
+    let image = "";
+    if (el.image) {
+      if (typeof el.image === "string") {
+        image = el.image;
+      } else {
+        image = await uploadService.upload(
+          req.files.instructionImage?.[count].path
+        );
+        fs.unlink(req.files.instructionImage?.[count].path);
+        count += 1;
+      }
+
+      await instructionService.createInstruction({
+        recipeId: recipeId,
+        instruction: el.instruction,
+        image: image,
+      });
+    } else {
+      await instructionService.createInstruction({
+        recipeId: recipeId,
+        instruction: el.instruction,
+      });
+    }
+  }
+
+  res.status(201).json({ recipe: { id: recipeId, ...req.body } });
+});
+
+exports.deleteRecipe = catchError(async (req, res, next) => {
+  const recipeId = +req.params.recipeId;
+  const deletedRecipe = await recipeService.deleteRecipe(recipeId);
+  res.status(204).json({ deletedRecipe });
 });
 
 exports.getRecipes = catchError(async (req, res, next) => {
+  if (req.query.name && !req.query.include) {
+    const recipes = await recipeService.findRecipesByRecipeName(req.query.name);
+    console.log("searching recipes name");
+    return res.status(200).json({ recipes });
+  }
+  if (!req.query.name && req.query.include) {
+    const recipes = await recipeService.findRecipesByInclude(req.query.include);
+    console.log("searching recipes inclue");
+    console.log("req.query.include", req.query.include);
+    return res.status(200).json({ recipes });
+  }
   const recipes = await recipeService.findRecipes();
+  console.log("getRecipes");
   res.status(200).json({ recipes });
 });
 

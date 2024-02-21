@@ -14,6 +14,16 @@ router.post(
   ]),
   recipeController.createRecipe
 );
+router.patch(
+  "/:recipeId",
+  authenticate,
+  upload.fields([
+    { name: "recipeImage", maxCount: 1 },
+    { name: "instructionImage" },
+  ]),
+  recipeController.updateRecipe
+);
+router.delete("/:recipeId", authenticate, recipeController.deleteRecipe);
 
 router.get("/", recipeController.getRecipes);
 router.get("/:recipeId", recipeController.getRecipeByRecipeId);
