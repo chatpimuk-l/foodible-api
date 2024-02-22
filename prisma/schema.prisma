@@ -11,16 +11,15 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  name     String    @db.VarChar(40)
-  email    String    @db.VarChar(60)
-  password String
-  image    String?
-  bio      String?   @db.TinyText
-  recipes  Recipe[]
-  comments Comment[]
-  ratings  Rating[]
-  favs     Fav[]
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(40)
+  email     String     @db.VarChar(60)
+  password  String
+  image     String?
+  bio       String?    @db.TinyText
+  recipes   Recipe[]
+  favs      Fav[]
+  responses Response[]
 
   @@map("users")
 }
@@ -35,9 +34,8 @@ model Recipe {
   ingredients  Ingredient[]
   infos        Info[]
   instructions Instruction[]
-  comments     Comment[]
-  ratings      Rating[]
   favs         Fav[]
+  responses    Response[]
 
   @@map("recipes")
 }
@@ -77,34 +75,19 @@ model Instruction {
   @@map("instructions")
 }
 
-model Comment {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  user      User      @relation(fields: [userId], references: [id])
-  recipeId  Int       @map("recipe_id")
-  recipe    Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  commentId Int?      @map("comment_id")
-  comment   Comment?  @relation("CommentReply", fields: [commentId], references: [id])
-  replies   Comment[] @relation("CommentReply")
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp(0)
-
-  @@map("comments")
-}
-
-model Rating {
+model Response {
   id        Int       @id @default(autoincrement())
   userId    Int       @map("user_id")
   user      User      @relation(fields: [userId], references: [id])
   recipeId  Int       @map("recipe_id")
   recipe    Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  comment   String?   @db.TinyText
   rating    Int
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(0)
 
-  @@map("ratings")
+  @@map("responses")
 }
 
 model Fav {

@@ -7,22 +7,27 @@ const ingredientService = require("../services/ingredient-service");
 const infoService = require("../services/info-service");
 const instructionService = require("../services/instruction-service");
 const uploadService = require("../services/upload-service");
+const validateRecipe = require("../utils/validations/validate-recipe");
 
 exports.createRecipe = catchError(async (req, res, next) => {
-  const {
-    name,
-    description,
-    prepTime,
-    cookTime,
-    serving,
-    tip,
-    ingredients,
-    instructions,
-  } = req.body;
+  req.body = {
+    ...req.body,
+    prepTime: +req.body.prepTime,
+    cookTime: +req.body.cookTime,
+    serving: +req.body.serving,
+    ingredients: JSON.parse(req.body.ingredients),
+    instructions: JSON.parse(req.body.instructions),
+    image: req.body.recipeImage || req.files?.recipeImage,
+  };
 
+  validateRecipe(req.body);
+
+  const { name, description, prepTime, cookTime, serving, tip } = req.body;
+
+  console.log("req.body", req.body);
   const recipeData = { userId: req.user.id, name: name };
-  await recipeService.createRecipe(recipeData);
 
+  await recipeService.createRecipe(recipeData);
   const { id } = await recipeService.findRecipeByUserIdAndName(
     req.user.id,
     req.body.name
@@ -44,8 +49,7 @@ exports.createRecipe = catchError(async (req, res, next) => {
   }
   await infoService.createInfo(infoData);
 
-  const parsedIngredients = JSON.parse(ingredients);
-  for (el of parsedIngredients) {
+  for (el of req.body.ingredients) {
     await ingredientService.createIngredient({
       recipeId: id,
       ingredient: el.ingredient,
@@ -54,19 +58,25 @@ exports.createRecipe = catchError(async (req, res, next) => {
     });
   }
 
-  const parsedInstructions = JSON.parse(instructions);
   let count = 0;
-  for (el of parsedInstructions) {
+  for (el of req.body.instructions) {
+    let image = "";
     if (el.image) {
-      const image = await uploadService.upload(
-        req.files.instructionImage?.[count].path
-      );
+      if (typeof el.image === "string") {
+        image = el.image;
+      } else {
+        image = await uploadService.upload(
+          req.files.instructionImage?.[count].path
+        );
+        fs.unlink(req.files.instructionImage?.[count].path);
+        count += 1;
+      }
+
       await instructionService.createInstruction({
         recipeId: id,
         instruction: el.instruction,
         image: image,
       });
-      count += 1;
     } else {
       await instructionService.createInstruction({
         recipeId: id,
@@ -79,16 +89,22 @@ exports.createRecipe = catchError(async (req, res, next) => {
 });
 
 exports.updateRecipe = catchError(async (req, res, next) => {
-  const {
-    name,
-    description,
-    prepTime,
-    cookTime,
-    serving,
-    tip,
-    ingredients,
-    instructions,
-  } = req.body;
+  req.body = {
+    ...req.body,
+    prepTime: +req.body.prepTime,
+    cookTime: +req.body.cookTime,
+    serving: +req.body.serving,
+    ingredients: JSON.parse(req.body.ingredients),
+    instructions: JSON.parse(req.body.instructions),
+    image: req.body.recipeImage || req.files?.recipeImage,
+  };
+
+  console.log(567);
+  console.log("req.body", req.body);
+  validateRecipe(req.body);
+  console.log(890);
+
+  const { name, description, prepTime, cookTime, serving, tip } = req.body;
 
   const recipeId = +req.params.recipeId;
 
@@ -115,8 +131,7 @@ exports.updateRecipe = catchError(async (req, res, next) => {
   await infoService.updateInfo(recipeId, infoData);
 
   await ingredientService.deleteIngredient(recipeId);
-  const parsedIngredients = JSON.parse(ingredients);
-  for (el of parsedIngredients) {
+  for (el of req.body.ingredients) {
     await ingredientService.createIngredient({
       recipeId: recipeId,
       ingredient: el.ingredient,
@@ -126,9 +141,8 @@ exports.updateRecipe = catchError(async (req, res, next) => {
   }
 
   await instructionService.deleteInstruction(recipeId);
-  const parsedInstructions = JSON.parse(instructions);
   let count = 0;
-  for (el of parsedInstructions) {
+  for (el of req.body.instructions) {
     let image = "";
     if (el.image) {
       if (typeof el.image === "string") {

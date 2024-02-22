@@ -4,13 +4,13 @@ const validate = require("./validate");
 const registerSchema = Joi.object({
   name: Joi.string()
     .required()
-    .pattern(/^[a-zA-Z]{6,}$/)
+    .pattern(/^[a-zA-Z]{3,}$/)
     .trim()
     .messages({
       "string.empty": "NAME is required",
       "any.required": "NAME is required",
       "string.pattern.base":
-        "NAME must be at least 6 characters and contains only alphabet",
+        "NAME must be at least 3 characters and contains only alphabet",
     }),
   email: Joi.string().required().trim().email({ tlds: false }).messages({
     "string.empty": "EMAIL is required",
