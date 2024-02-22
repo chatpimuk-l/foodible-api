@@ -51,25 +51,54 @@ exports.findRecipesByUserId = (userId) =>
     orderBy: { createdAt: "desc" },
   });
 
-exports.findRecipesByRecipeName = (name) =>
-  prisma.recipe.findMany({
-    where: { name: { contains: name } },
-    include: { infos: { select: { image: true } } },
-    orderBy: { createdAt: "desc" },
-  });
+// exports.findRecipesByRecipeName = (name) =>
+//   prisma.recipe.findMany({
+//     where: { name: { contains: name } },
+//     include: { infos: { select: { image: true } } },
+//     orderBy: { createdAt: "desc" },
+//   });
 
-// exports.findRecipeIngredientByInclude = (include) => prisma.recipe.findMany({include: {ingredients: true}})
+// // exports.findRecipeIngredientByInclude = (include) => prisma.recipe.findMany({include: {ingredients: true}})
 
-exports.findRecipesByInclude = (include) =>
+// exports.findRecipesByInclude = (include) =>
+//   prisma.recipe.findMany({
+//     where: {
+//       ingredients: {
+//         some: {
+//           ingredient: {
+//             in: include,
+//           },
+//         },
+//       },
+//     },
+//     select: {
+//       ingredients: {
+//         where: { ingredient: { in: include } },
+//       },
+//       id: true,
+//       name: true,
+//       infos: { select: { image: true } },
+//     },
+//     orderBy: {
+//       createdAt: "desc",
+//     },
+//   });
+
+exports.findRecipesByNameAndInclude = (name, include) =>
   prisma.recipe.findMany({
     where: {
-      ingredients: {
-        some: {
-          ingredient: {
-            in: include,
+      AND: [
+        {
+          ingredients: {
+            some: {
+              ingredient: {
+                in: include,
+              },
+            },
           },
         },
-      },
+        { name: { contains: name } },
+      ],
     },
     select: {
       ingredients: {

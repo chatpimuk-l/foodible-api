@@ -14,7 +14,7 @@ router.post(
   ]),
   recipeController.createRecipe
 );
-router.patch(
+router.put(
   "/:recipeId",
   authenticate,
   upload.fields([

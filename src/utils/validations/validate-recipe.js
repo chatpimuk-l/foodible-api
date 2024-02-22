@@ -12,7 +12,6 @@ module.exports = validateRecipe = (reqBody) => {
         "string.pattern.base":
           "NAME must be at least 3 characters and contains only alphabet",
       }),
-    description: Joi.string().trim(),
     prepTime: Joi.number().integer().required().messages({
       "string.empty": "PREP TIME is required",
       "any.required": "PREP TIME is required",
@@ -30,7 +29,6 @@ module.exports = validateRecipe = (reqBody) => {
       "any.required": "SERVINGS is required",
       "number.base": "SERVINGS must be a number",
     }),
-    tip: Joi.string().trim(),
     image: Joi.required().messages({
       "string.empty": "IMAGE is required",
       "any.required": "IMAGE is required",
