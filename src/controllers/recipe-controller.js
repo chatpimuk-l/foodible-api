@@ -178,25 +178,31 @@ exports.deleteRecipe = catchError(async (req, res, next) => {
 });
 
 exports.getRecipes = catchError(async (req, res, next) => {
-  // if (req.query.name && !req.query.include) {
-  //   const recipes = await recipeService.findRecipesByRecipeName(req.query.name);
-  //   console.log("searching recipes name");
-  //   return res.status(200).json({ recipes });
-  // }
-  // if (!req.query.name && req.query.include) {
-  //   const include = JSON.parse(req.query.include);
-  //   const recipes = await recipeService.findRecipesByInclude(include);
-  //   console.log("searching recipes inclue");
-  //   console.log("req.query.include", req.query.include);
-  //   return res.status(200).json({ recipes });
-  // }
-  const include = JSON.parse(req.query.include);
-  const recipes = await recipeService.findRecipesByNameAndInclude(
-    req.query.name,
-    include
-  );
-  console.log("getRecipes");
-  res.status(200).json({ recipes });
+  if (!req.query.name && !req.query.include) {
+    const recipes = await recipeService.findRecipes();
+    return res.status(200).json({ recipes });
+  }
+  if (req.query.name && !req.query.include) {
+    const recipes = await recipeService.findRecipesByName(req.query.name);
+    console.log("searching recipes name");
+    return res.status(200).json({ recipes });
+  }
+  if (!req.query.name && req.query.include) {
+    const include = JSON.parse(req.query.include);
+    const recipes = await recipeService.findRecipesByInclude(include);
+    console.log("searching recipes inclue");
+    console.log("req.query.include", req.query.include);
+    return res.status(200).json({ recipes });
+  }
+  if (req.query.name && req.query.include) {
+    const include = JSON.parse(req.query.include);
+    const recipes = await recipeService.findRecipesByNameAndInclude(
+      req.query.name,
+      include
+    );
+    console.log("getRecipes");
+    res.status(200).json({ recipes });
+  }
 });
 
 exports.getRecipeByRecipeId = catchError(async (req, res, next) => {
