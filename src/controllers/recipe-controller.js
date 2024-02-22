@@ -184,7 +184,8 @@ exports.getRecipes = catchError(async (req, res, next) => {
     return res.status(200).json({ recipes });
   }
   if (!req.query.name && req.query.include) {
-    const recipes = await recipeService.findRecipesByInclude(req.query.include);
+    const include = JSON.parse(req.query.include);
+    const recipes = await recipeService.findRecipesByInclude(include);
     console.log("searching recipes inclue");
     console.log("req.query.include", req.query.include);
     return res.status(200).json({ recipes });
