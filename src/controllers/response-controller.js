@@ -20,3 +20,10 @@ exports.getResponsesByRecipeId = catchError(async (req, res, next) => {
   );
   res.status(200).json({ responses });
 });
+
+exports.getRatingsByRecipeId = catchError(async (req, res, next) => {
+  const ratings = await responseService.getRatingsByRecipeId(
+    +req.params.recipeId
+  );
+  res.status(200).json({ ratings });
+});

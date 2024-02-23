@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-// const userController = require("../controllers/user-controller");
 const responseController = require("../controllers/response-controller");
 // const {
 //   validateTargetUserId,
@@ -11,5 +10,6 @@ const authenticate = require("../middlewares/authenticate");
 
 router.post("/:recipeId", authenticate, responseController.createResponse);
 router.get("/:recipeId", responseController.getResponsesByRecipeId);
+router.get("/ratings/:recipeId", responseController.getRatingsByRecipeId);
 
 module.exports = router;
