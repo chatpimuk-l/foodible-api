@@ -10,6 +10,7 @@ const authRoute = require("./routes/auth-route");
 const userRoute = require("./routes/user-route");
 const recipeRoute = require("./routes/recipe-route");
 const responseRoute = require("./routes/response-route");
+const favRoute = require("./routes/fav-route");
 
 const error = require("./middlewares/error");
 const notFound = require("./middlewares/not-found");
@@ -32,6 +33,7 @@ app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/recipes", recipeRoute);
 app.use("/responses", responseRoute);
+app.use("/favs", favRoute);
 
 app.use(notFound);
 app.use(error);

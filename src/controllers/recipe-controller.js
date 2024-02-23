@@ -214,3 +214,8 @@ exports.getRecipeByUserId = catchError(async (req, res, next) => {
   const recipes = await recipeService.findRecipesByUserId(req.params.userId);
   res.status(200).json({ recipes });
 });
+
+exports.getRecipeByUserIdFav = catchError(async (req, res, next) => {
+  const recipes = await recipeService.findRecipesByUserIdFav(req.params.userId);
+  res.status(200).json({ recipes });
+});

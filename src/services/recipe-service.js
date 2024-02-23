@@ -41,12 +41,20 @@ exports.findRecipeByRecipeId = (recipeId) =>
           image: true,
         },
       },
+      favs: { select: { userId: true } },
     },
   });
 
 exports.findRecipesByUserId = (userId) =>
   prisma.recipe.findMany({
     where: { userId: +userId },
+    include: { infos: { select: { image: true } } },
+    orderBy: { createdAt: "desc" },
+  });
+
+exports.findRecipesByUserIdFav = (userId) =>
+  prisma.recipe.findMany({
+    where: { favs: { some: { userId: +userId } } },
     include: { infos: { select: { image: true } } },
     orderBy: { createdAt: "desc" },
   });

@@ -28,5 +28,6 @@ router.delete("/:recipeId", authenticate, recipeController.deleteRecipe);
 router.get("/", recipeController.getRecipes);
 router.get("/:recipeId", recipeController.getRecipeByRecipeId);
 router.get("/users/:userId", recipeController.getRecipeByUserId);
+router.get("/favs/:userId", recipeController.getRecipeByUserIdFav);
 
 module.exports = router;
