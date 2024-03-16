@@ -59,7 +59,7 @@ exports.createRecipe = catchError(async (req, res, next) => {
   }
 
   let count = 0;
-  for (el of req.body.instructions) {
+  for (let el of req.body.instructions) {
     let image = "";
     if (el.image) {
       if (typeof el.image === "string") {
