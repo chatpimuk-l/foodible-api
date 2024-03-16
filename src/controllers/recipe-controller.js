@@ -49,7 +49,7 @@ exports.createRecipe = catchError(async (req, res, next) => {
   }
   await infoService.createInfo(infoData);
 
-  for (el of req.body.ingredients) {
+  for (let el of req.body.ingredients) {
     await ingredientService.createIngredient({
       recipeId: id,
       ingredient: el.ingredient,
